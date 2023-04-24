@@ -1,4 +1,6 @@
-﻿Console.WriteLine("Welcome!");
+﻿string file = "data.txt";
+
+Console.WriteLine("Welcome!");
 
 Console.WriteLine("Enter 1 to create data file.");
 Console.WriteLine("Enter 2 to parse data.");
@@ -21,7 +23,7 @@ if (resp == "1")
     // random number generator
     Random rnd = new Random();
     // create file
-    StreamWriter sw = new StreamWriter("data.txt");
+    StreamWriter sw = new StreamWriter(file);
 
     // loop for the desired # of weeks
     while (dataDate < dataEndDate)
@@ -44,5 +46,32 @@ if (resp == "1")
 else if (resp == "2")
 {
     // TODO: parse data file
+    Console.WriteLine("Weekly Report:");
+    StreamReader sr = new StreamReader(file);
+    while (!sr.EndOfStream)
+    {
+        string line = sr.ReadLine();
+        string[] dateWeek = line.Split(',');
+        DateTime date = DateTime.Parse(dateWeek[0]);
+        string[] days = dateWeek[1].Split('|');
 
+        Console.WriteLine($"Week of {date.ToLongDateString()}");
+        Console.WriteLine("Su Mo Tu We Th Fr Sa Tot Avg");
+        Console.WriteLine("-- -- -- -- -- -- -- --- ---");
+        int sum = 0;
+        for (int i = 0; i < days.Length; i++)
+        {
+            string hours = days[i];
+            hours = hours.PadLeft(2);
+            Console.Write($"{hours} ");
+
+            sum += int.Parse(hours);
+        }
+        double avg = Math.Round((double)sum / days.Length, 1);
+        string total = sum.ToString().PadLeft(3);
+        string average = avg.ToString().PadLeft(3);
+        Console.WriteLine($"{total} {average}\n");
+
+    }
+    sr.Close();
 }
